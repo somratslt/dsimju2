@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+.container {
+    text-align: center;
+    margin: 2rem auto;
+    box-sizing: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    border: 2px dashed #4496d2;
+    border-radius: 0;
+    box-sizing: border-box;
+    background: beige;
+    
+}
+.lamp1 {
+    text-align: 0;
+    
+    
+}
+.img {
+    background-color: darkgray;
+    object-fit: cover;
+    border-radius: 50%;
+}

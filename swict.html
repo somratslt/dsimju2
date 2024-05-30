@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED-ON-OFF</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+
+    <script src="paho.javascript-1.0.3/paho-mqtt.js"></script>
+
+    <script>
+        client = new Paho.MQTT.Client("mqtt-dashboard.com", Number(8000), "clientId-uugukhjgyyfyj0555");
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        client.connect({
+            onSuccess: onConnect
+        });
+
+        function onConnect() {
+            console.log("onConnect");
+            client.subscribe("dsimju/html");
+            message = new Paho.MQTT.Message("Hello MQTT");
+            message.destinationName = "dsimju/html";
+            client.send(message);
+        }
+
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        function onMessageArrived(message) {
+            console.log("onMessageArrived:" + message.payloadString);
+            document.getElementById("demo").innerHTML = message.payloadString;
+
+            const imgElement = document.getElementById('myImage');
+            var mqtt = message.payloadString;
+
+            mqtt = mqtt.trim();
+
+            if (mqtt == "ON") {
+                //code if condition is true
+                imgElement.src = 'img/on.png';
+                playSound()
+
+
+
+            } else if (mqtt == "OFF") {
+                //code if condition is false
+                imgElement.src = 'img/off.png';
+                playSound()
+
+            }
+
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="lamp1">
+                    <button type="button" class="btn btn-primary" onclick="showPicture(1);playSound()"> ON </button>
+                    <button type="button" class="btn btn-danger" onclick="showPicture(0);playSound()">OFF</button>
+
+                    <div class="img">
+                        <img src="img/off.png" id="myImage" width="150" height="150">
+                    </div>
+                    <div id="demo" class="demo"></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        function playSound() {
+            var audio = new Audio('sound/sound.mp3');
+            audio.play();
+            return audio.play();
+        }
+
+        function showPicture(status) {
+
+            const imgElement = document.getElementById('myImage');
+
+            if (status == 1) {
+                //code if condition is true
+
+                imgElement.src = 'img/on.png';
+                message = new Paho.MQTT.Message("ON");
+                message.destinationName = "dsimju/html";
+                client.send(message);
+
+
+            } else if (status == 0) {
+                //code if condition is false
+                imgElement.src = 'img/off.png';
+                message = new Paho.MQTT.Message("OFF");
+                message.destinationName = "dsimju/html";
+                client.send(message);
+
+            }
+
+        }
+    </script>
+
+
+</body>
